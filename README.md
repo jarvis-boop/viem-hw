@@ -1,6 +1,13 @@
 # viem-hw
 
+[![npm version](https://img.shields.io/npm/v/viem-hw.svg)](https://www.npmjs.com/package/viem-hw)
+[![npm downloads](https://img.shields.io/npm/dm/viem-hw.svg)](https://www.npmjs.com/package/viem-hw)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/jarvis-boop/viem-hw/actions/workflows/ci.yml/badge.svg)](https://github.com/jarvis-boop/viem-hw/actions/workflows/ci.yml)
+
 Hardware wallet SDK for [Viem](https://viem.sh) — Ledger and Trezor support with full TypeScript types.
+
+**[📖 Documentation](https://github.com/jarvis-boop/viem-hw#readme)** · **[🎮 Demo](https://jarvis-boop.github.io/viem-hw/)** · **[📦 npm](https://www.npmjs.com/package/viem-hw)**
 
 ## Features
 
