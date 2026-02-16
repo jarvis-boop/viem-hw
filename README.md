@@ -304,6 +304,157 @@ viem-hw is fully compatible with Chrome MV3 extensions:
 }
 ```
 
+## Testing with Mocks
+
+viem-hw includes comprehensive mocks for testing without hardware:
+
+### Mock Accounts
+
+```typescript
+import { createMockLedgerAccount, createMockLedgerDiscovery } from 'viem-hw/ledger/mock'
+import { createWalletClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+// Create a mock account with deterministic signing
+const account = createMockLedgerAccount({
+  path: "m/44'/60'/0'/0/0",
+  scenario: 'success', // or 'user-rejected', 'device-locked', etc.
+})
+
+// Use exactly like a real account
+const client = createWalletClient({
+  account,
+  chain: mainnet,
+  transport: http(),
+})
+
+// All operations work and return deterministic signatures
+const signature = await client.signMessage({ message: 'test' })
+```
+
+### Mock Error Scenarios
+
+```typescript
+import { createMockLedgerAccount } from 'viem-hw/ledger/mock'
+import { UserRejectedError, DeviceLockedError } from 'viem-hw'
+
+// Test user rejection
+const rejectedAccount = createMockLedgerAccount({ scenario: 'user-rejected' })
+await expect(rejectedAccount.signMessage({ message: 'test' }))
+  .rejects.toBeInstanceOf(UserRejectedError)
+
+// Test device locked
+const lockedAccount = createMockLedgerAccount({ scenario: 'device-locked' })
+await expect(lockedAccount.signMessage({ message: 'test' }))
+  .rejects.toBeInstanceOf(DeviceLockedError)
+
+// Test per-operation scenarios
+const account = createMockLedgerAccount({
+  scenario: 'success',
+  scenarioOverrides: {
+    signMessage: 'user-rejected', // Only messages are rejected
+    signTransaction: 'success',   // Transactions work
+  },
+})
+```
+
+### Mock Discovery
+
+```typescript
+import { createMockLedgerDiscovery } from 'viem-hw/ledger/mock'
+
+const discover = createMockLedgerDiscovery({
+  count: 5,
+  startIndex: 0,
+  // Optionally provide known addresses
+  addresses: {
+    "m/44'/60'/0'/0/0": '0x1234...',
+  },
+})
+
+const accounts = await discover()
+// Returns array of DiscoveredAccount with deterministic addresses
+```
+
+### Mock Device Manager
+
+```typescript
+import { createMockLedgerDeviceManager } from 'viem-hw/ledger/mock'
+
+const manager = createMockLedgerDeviceManager({
+  initialState: 'disconnected',
+  deviceInfo: { model: 'nanoX', firmwareVersion: '2.1.0' },
+  appConfig: { version: '1.10.0', supportsEIP712: true },
+})
+
+// Test connection flow
+await manager.connect()
+expect(manager.isConnected()).toBe(true)
+
+// Test state change events
+manager.onStateChange((state, error) => {
+  console.log('State changed to:', state)
+})
+
+// Test address verification
+const { address, verified } = await manager.verifyAddress("m/44'/60'/0'/0/0")
+
+// Test failure scenarios
+const failingManager = createMockLedgerDeviceManager({
+  failConnect: new Error('USB not available'),
+})
+await expect(failingManager.connect()).rejects.toThrow('USB not available')
+```
+
+### Mock Scenarios
+
+Available scenarios for mock accounts:
+
+| Scenario | Error Thrown |
+|----------|--------------|
+| `success` | (none) |
+| `user-rejected` | `UserRejectedError` |
+| `device-locked` | `DeviceLockedError` |
+| `app-not-open` | `AppNotOpenError` |
+| `disconnected` | `DeviceNotFoundError` |
+| `timeout` | `ConnectionTimeoutError` |
+| `invalid-data` | `HardwareWalletError` |
+
+## Device Management
+
+For advanced connection handling:
+
+```typescript
+import { createLedgerDeviceManager } from 'viem-hw/ledger'
+
+const manager = createLedgerDeviceManager({
+  transportType: 'webhid',
+  autoReconnect: true,
+})
+
+// Listen for state changes
+manager.onStateChange((state, error) => {
+  if (state === 'disconnected') {
+    showReconnectPrompt()
+  }
+})
+
+// Connect/disconnect
+await manager.connect()
+await manager.disconnect()
+
+// Get device info
+const info = await manager.getDeviceInfo()
+console.log(`Model: ${info.model}, Firmware: ${info.firmwareVersion}`)
+
+// Get Ethereum app config
+const config = await manager.getAppConfig()
+console.log(`App version: ${config.version}, EIP-712: ${config.supportsEIP712}`)
+
+// Verify address on device (user confirmation)
+const { address, verified } = await manager.verifyAddress("m/44'/60'/0'/0/0")
+```
+
 ## License
 
 MIT
