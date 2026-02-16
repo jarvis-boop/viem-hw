@@ -243,29 +243,34 @@ function App() {
     setAccounts([]);
     setSelectedAccount(null);
     setDeviceInfo(null);
-    setAppConfig(null);
     setLastSignature(null);
     setStatus("idle");
     log("info", "🔄 Reset");
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-8 bg-bg text-fg">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl font-bold mb-2">viem-hw Test App</h1>
-          <p className="text-[var(--muted)]">Test hardware wallet integration with real devices</p>
+          <p className="text-muted">Test hardware wallet integration with real devices</p>
         </header>
 
         {/* Vendor Selection */}
         {!vendor && (
-          <div className="card mb-6">
+          <div className="bg-card border border-border rounded-xl p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Select Device</h2>
             <div className="flex gap-4">
-              <button onClick={connectLedger} className="btn btn-primary flex-1 py-4">
+              <button
+                onClick={connectLedger}
+                className="flex-1 py-4 px-4 rounded-lg font-medium bg-accent hover:bg-accent/90 text-white transition-colors"
+              >
                 🔵 Connect Ledger
               </button>
-              <button onClick={connectTrezor} className="btn btn-primary flex-1 py-4">
+              <button
+                onClick={connectTrezor}
+                className="flex-1 py-4 px-4 rounded-lg font-medium bg-accent hover:bg-accent/90 text-white transition-colors"
+              >
                 ⚫ Connect Trezor
               </button>
             </div>
@@ -274,19 +279,22 @@ function App() {
 
         {/* Device Info */}
         {vendor && (
-          <div className="card mb-6">
+          <div className="bg-card border border-border rounded-xl p-6 mb-6">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="text-xl font-semibold">
                   {vendor === "ledger" ? "🔵 Ledger" : "⚫ Trezor"}
                 </h2>
                 {deviceInfo && (
-                  <p className="text-sm text-[var(--muted)]">
+                  <p className="text-sm text-muted">
                     {deviceInfo.model} • FW {deviceInfo.firmwareVersion}
                   </p>
                 )}
               </div>
-              <button onClick={reset} className="btn btn-secondary text-sm">
+              <button
+                onClick={reset}
+                className="px-4 py-2 rounded-lg font-medium bg-card border border-border hover:border-accent/50 text-sm transition-colors"
+              >
                 Disconnect
               </button>
             </div>
@@ -301,10 +309,10 @@ function App() {
                       key={acc.path}
                       onClick={() => selectAccount(acc)}
                       disabled={status !== "idle"}
-                      className="w-full text-left p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)] hover:border-[var(--accent)] transition-colors disabled:opacity-50"
+                      className="w-full text-left p-3 rounded-lg bg-bg border border-border hover:border-accent transition-colors disabled:opacity-50"
                     >
                       <div className="font-mono text-sm">{acc.address}</div>
-                      <div className="text-xs text-[var(--muted)]">{acc.path}</div>
+                      <div className="text-xs text-muted">{acc.path}</div>
                     </button>
                   ))}
                 </div>
@@ -314,8 +322,8 @@ function App() {
             {/* Selected Account Actions */}
             {selectedAccount && (
               <div>
-                <div className="p-3 rounded-lg bg-[var(--bg)] border border-[var(--success)] mb-4">
-                  <div className="text-sm text-[var(--success)] mb-1">Active Account</div>
+                <div className="p-3 rounded-lg bg-bg border border-success mb-4">
+                  <div className="text-sm text-success mb-1">Active Account</div>
                   <div className="font-mono text-sm break-all">{selectedAccount.address}</div>
                 </div>
 
@@ -328,13 +336,13 @@ function App() {
                         type="text"
                         value={messageToSign}
                         onChange={(e) => setMessageToSign(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] focus:border-[var(--accent)] outline-none"
+                        className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border focus:border-accent outline-none"
                         placeholder="Message to sign"
                       />
                       <button
                         onClick={signMessage}
                         disabled={status !== "idle"}
-                        className="btn btn-primary"
+                        className="px-4 py-2 rounded-lg font-medium bg-accent hover:bg-accent/90 text-white transition-colors disabled:opacity-50"
                       >
                         {status === "signing" ? "⏳" : "✍️"} Sign
                       </button>
@@ -346,7 +354,7 @@ function App() {
                     <button
                       onClick={signTypedData}
                       disabled={status !== "idle"}
-                      className="btn btn-secondary"
+                      className="px-4 py-2 rounded-lg font-medium bg-card border border-border hover:border-accent/50 transition-colors disabled:opacity-50"
                     >
                       📝 Sign EIP-712
                     </button>
@@ -354,7 +362,7 @@ function App() {
                       <button
                         onClick={verifyAddress}
                         disabled={status !== "idle"}
-                        className="btn btn-secondary"
+                        className="px-4 py-2 rounded-lg font-medium bg-card border border-border hover:border-accent/50 transition-colors disabled:opacity-50"
                       >
                         🔍 Verify Address
                       </button>
@@ -363,8 +371,8 @@ function App() {
 
                   {/* Last Signature */}
                   {lastSignature && (
-                    <div className="p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)]">
-                      <div className="text-sm text-[var(--muted)] mb-1">Last Signature</div>
+                    <div className="p-3 rounded-lg bg-bg border border-border">
+                      <div className="text-sm text-muted mb-1">Last Signature</div>
                       <div className="font-mono text-xs break-all">{lastSignature}</div>
                     </div>
                   )}
@@ -376,9 +384,9 @@ function App() {
 
         {/* Status */}
         {status !== "idle" && (
-          <div className="card mb-6 bg-[var(--accent)]/10 border-[var(--accent)]/30">
+          <div className="bg-accent/10 border border-accent/30 rounded-xl p-6 mb-6">
             <div className="flex items-center gap-3">
-              <div className="animate-spin w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full" />
+              <div className="animate-spin w-5 h-5 border-2 border-accent border-t-transparent rounded-full" />
               <span>
                 {status === "connecting" && "Connecting to device..."}
                 {status === "discovering" && "Discovering accounts..."}
@@ -390,30 +398,21 @@ function App() {
         )}
 
         {/* Logs */}
-        <div className="card">
+        <div className="bg-card border border-border rounded-xl p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Logs</h2>
-            <button
-              onClick={() => setLogs([])}
-              className="text-sm text-[var(--muted)] hover:text-[var(--fg)]"
-            >
+            <button onClick={() => setLogs([])} className="text-sm text-muted hover:text-fg">
               Clear
             </button>
           </div>
           <div className="space-y-2 max-h-64 overflow-y-auto font-mono text-sm">
             {logs.length === 0 ? (
-              <p className="text-[var(--muted)]">Connect a device to get started</p>
+              <p className="text-muted">Connect a device to get started</p>
             ) : (
               logs.map((l) => (
                 <div
                   key={l.id}
-                  className={`${
-                    l.type === "error"
-                      ? "text-[var(--error)]"
-                      : l.type === "success"
-                        ? "text-[var(--success)]"
-                        : "text-[var(--muted)]"
-                  }`}
+                  className={`${l.type === "error" ? "text-error" : l.type === "success" ? "text-success" : "text-muted"}`}
                 >
                   <span className="opacity-50">{l.time.toLocaleTimeString()}</span> {l.message}
                 </div>
@@ -423,8 +422,8 @@ function App() {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 text-sm text-[var(--muted)]">
-          <h3 className="font-medium text-[var(--fg)] mb-2">Instructions</h3>
+        <div className="mt-8 text-sm text-muted">
+          <h3 className="font-medium text-fg mb-2">Instructions</h3>
           <ul className="list-disc list-inside space-y-1">
             <li>Connect your Ledger or Trezor device via USB</li>
             <li>For Ledger: Open the Ethereum app on your device</li>
