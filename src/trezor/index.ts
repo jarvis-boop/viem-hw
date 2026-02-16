@@ -21,3 +21,13 @@ export {
   type TrezorConnectOptions,
   type TrezorResponse,
 } from './connect.js'
+
+export {
+  createTrezorDeviceManager,
+  type TrezorDeviceManager,
+  type TrezorDeviceInfo,
+  type TrezorFeatures,
+  type CreateTrezorDeviceManagerOptions,
+  type ConnectionState,
+  type ConnectionStateListener,
+} from './device.js'

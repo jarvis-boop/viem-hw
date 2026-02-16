@@ -24,3 +24,13 @@ export {
   type TransportOptions,
   type LedgerTransport,
 } from './transport.js'
+
+export {
+  createLedgerDeviceManager,
+  type LedgerDeviceManager,
+  type LedgerDeviceInfo,
+  type LedgerAppConfig,
+  type CreateDeviceManagerOptions,
+  type ConnectionState,
+  type ConnectionStateListener,
+} from './device.js'

@@ -23,9 +23,31 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts",
-    "./ledger": "./src/ledger/index.ts",
-    "./trezor": "./src/trezor/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "src": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./ledger": {
+      "types": "./dist/ledger/index.d.ts",
+      "src": "./src/ledger/index.ts",
+      "default": "./dist/ledger/index.js"
+    },
+    "./ledger/mock": {
+      "types": "./dist/ledger/mock/index.d.ts",
+      "src": "./src/ledger/mock/index.ts",
+      "default": "./dist/ledger/mock/index.js"
+    },
+    "./trezor": {
+      "types": "./dist/trezor/index.d.ts",
+      "src": "./src/trezor/index.ts",
+      "default": "./dist/trezor/index.js"
+    },
+    "./trezor/mock": {
+      "types": "./dist/trezor/mock/index.d.ts",
+      "src": "./src/trezor/mock/index.ts",
+      "default": "./dist/trezor/mock/index.js"
+    }
   },
   "files": [
     "dist",
@@ -76,5 +98,8 @@
     "@trezor/connect": {
       "optional": true
     }
-  }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts"
 }

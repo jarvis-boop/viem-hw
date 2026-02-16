@@ -134,7 +134,8 @@ export function mapLedgerError(error: unknown): HardwareWalletError {
       return new HardwareWalletError(`Invalid data: ${message}`, 'INVALID_DATA')
     case 0x6b00: // Wrong parameter
       return new HardwareWalletError(`Wrong parameter: ${message}`, 'WRONG_PARAMETER')
-    case 0x6d00: // INS not supported
+    case 0x6d00: // INS not supported - usually means wrong app or app not open
+      return new AppNotOpenError('ledger', 'Ethereum')
     case 0x6e00: // CLA not supported
       return new UnsupportedOperationError(message)
     case 0x6faa: // Device locked

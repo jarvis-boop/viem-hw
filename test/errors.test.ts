@@ -128,8 +128,14 @@ describe('mapLedgerError', () => {
     expect(mapped).toBeInstanceOf(DeviceLockedError)
   })
 
-  it('should map unsupported operation status codes', () => {
+  it('should map 0x6d00 to AppNotOpenError (wrong/no app)', () => {
     const error = { statusCode: 0x6d00, message: 'INS not supported' }
+    const mapped = mapLedgerError(error)
+    expect(mapped).toBeInstanceOf(AppNotOpenError)
+  })
+
+  it('should map 0x6e00 to UnsupportedOperationError', () => {
+    const error = { statusCode: 0x6e00, message: 'CLA not supported' }
     const mapped = mapLedgerError(error)
     expect(mapped).toBeInstanceOf(UnsupportedOperationError)
   })
