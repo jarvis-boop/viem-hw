@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 // Import from local viem-hw (linked via workspace)
 import {
@@ -12,6 +12,7 @@ import {
   createLedgerAccount,
   discoverLedgerAccounts,
   createLedgerDeviceManager,
+  type LedgerDeviceManager,
   type LedgerDeviceInfo,
   type LedgerAppConfig,
 } from "../../src/ledger/index.js";
@@ -28,6 +29,8 @@ interface Log {
   time: Date;
 }
 
+let logIdCounter = 0;
+
 function App() {
   const [vendor, setVendor] = useState<Vendor>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -39,8 +42,11 @@ function App() {
   const [messageToSign, setMessageToSign] = useState("Hello from viem-hw!");
   const [lastSignature, setLastSignature] = useState<string | null>(null);
 
+  // Keep a reference to the Ledger device manager to reuse transport
+  const ledgerManagerRef = useRef<LedgerDeviceManager | null>(null);
+
   const log = useCallback((type: Log["type"], message: string) => {
-    setLogs((prev) => [...prev, { id: Date.now(), type, message, time: new Date() }]);
+    setLogs((prev) => [...prev, { id: logIdCounter++, type, message, time: new Date() }]);
   }, []);
 
   const handleError = useCallback(
@@ -69,6 +75,7 @@ function App() {
 
     try {
       const manager = createLedgerDeviceManager();
+      ledgerManagerRef.current = manager;
       await manager.connect();
 
       const info = await manager.getDeviceInfo();
@@ -92,7 +99,12 @@ function App() {
       setStatus("discovering");
       log("info", "🔍 Discovering accounts...");
 
-      const discovered = await discoverLedgerAccounts({ count: 5 });
+      // Use the transport from the manager to avoid "device already open" error
+      const transport = manager.getTransport();
+      const discovered = await discoverLedgerAccounts({
+        count: 5,
+        transport: transport ?? undefined,
+      });
       setAccounts(discovered);
       log("success", `✅ Found ${discovered.length} accounts`);
 
@@ -135,7 +147,12 @@ function App() {
       let hwAccount: HardwareWalletAccount;
 
       if (vendor === "ledger") {
-        hwAccount = await createLedgerAccount({ path: account.path });
+        // Use existing transport from manager
+        const transport = ledgerManagerRef.current?.getTransport();
+        hwAccount = await createLedgerAccount({
+          path: account.path,
+          transport: transport ?? undefined,
+        });
       } else {
         hwAccount = await createTrezorAccount({
           path: account.path,
@@ -222,11 +239,12 @@ function App() {
     log("info", "👀 Please confirm the address matches on your device...");
 
     try {
-      const manager = createLedgerDeviceManager();
-      await manager.connect();
-      const { address, verified } = await manager.verifyAddress(
-        accounts.find((a) => a.address === selectedAccount.address)?.path,
-      );
+      const manager = ledgerManagerRef.current;
+      if (!manager) {
+        throw new Error("Ledger not connected");
+      }
+      const accountPath = accounts.find((a) => a.address === selectedAccount.address)?.path;
+      const { address, verified } = await manager.verifyAddress(accountPath);
 
       if (verified) {
         log("success", `✅ Address verified: ${address}`);
@@ -238,7 +256,17 @@ function App() {
     }
   };
 
-  const reset = () => {
+  const reset = async () => {
+    // Disconnect Ledger if connected
+    if (ledgerManagerRef.current) {
+      try {
+        await ledgerManagerRef.current.disconnect();
+      } catch {
+        // Ignore disconnect errors
+      }
+      ledgerManagerRef.current = null;
+    }
+
     setVendor(null);
     setAccounts([]);
     setSelectedAccount(null);
