@@ -7,6 +7,12 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "viem-hw": ["../src/index.ts"],
+      "viem-hw/ledger": ["../src/ledger/index.ts"],
+      "viem-hw/trezor": ["../src/trezor/index.ts"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

@@ -1,13 +1,15 @@
 import { useState, useCallback, useRef } from "react";
 
-// Import from local viem-hw (linked via workspace)
+// Import from viem-hw (resolved via vite alias to ../src for local dev)
 import {
   HardwareWalletError,
   UserRejectedError,
   DeviceLockedError,
   AppNotOpenError,
   DeviceNotFoundError,
-} from "../../src/index.js";
+  type DiscoveredAccount,
+  type HardwareWalletAccount,
+} from "viem-hw";
 import {
   createLedgerAccount,
   discoverLedgerAccounts,
@@ -15,9 +17,8 @@ import {
   type LedgerDeviceManager,
   type LedgerDeviceInfo,
   type LedgerAppConfig,
-} from "../../src/ledger/index.js";
-import { createTrezorAccount, discoverTrezorAccounts } from "../../src/trezor/index.js";
-import type { DiscoveredAccount, HardwareWalletAccount } from "../../src/shared/types.js";
+} from "viem-hw/ledger";
+import { createTrezorAccount, discoverTrezorAccounts } from "viem-hw/trezor";
 
 type Vendor = "ledger" | "trezor" | null;
 type Status = "idle" | "connecting" | "discovering" | "signing" | "verifying";
