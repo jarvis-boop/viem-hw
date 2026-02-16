@@ -85,7 +85,7 @@
   "bugs": {
     "url": "https://github.com/jarvis-boop/viem-hw/issues"
   },
-  "homepage": "https://github.com/jarvis-boop/viem-hw#readme",
+  "homepage": "https://jarvis-boop.github.io/viem-hw/",
   "dependencies": {
     "ox": "^0.6.0"
   },
