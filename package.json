@@ -29,7 +29,7 @@
   },
   "[!start-pkg]": "",
   "name": "viem-hw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Viem-native hardware wallet SDK for Ledger and Trezor",
   "type": "module",
   "sideEffects": false,
