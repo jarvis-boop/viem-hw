@@ -1,4 +1,4 @@
-import type { Address, Hex as HexType } from 'viem'
+import type { Address } from 'viem'
 import { mapLedgerError, AppNotOpenError } from '../shared/errors.js'
 import { isValidPath, DEFAULT_BASE_PATH } from '../shared/paths.js'
 import type { DerivationPath } from '../shared/types.js'
@@ -234,8 +234,8 @@ interface LedgerEthApp {
 async function loadEthApp(): Promise<new (transport: unknown) => LedgerEthApp> {
   try {
     const module = await import('@ledgerhq/hw-app-eth')
-    return module.default || module.Eth
-  } catch (error) {
+    return module.default as unknown as new (transport: unknown) => LedgerEthApp
+  } catch {
     throw new Error(
       'Ledger SDK not installed. Run: bun add @ledgerhq/hw-app-eth @ledgerhq/hw-transport-webhid'
     )

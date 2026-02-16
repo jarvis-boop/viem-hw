@@ -75,8 +75,15 @@ describe('AppNotOpenError', () => {
   })
 
   it('should create app not open error with custom app', () => {
-    const error = new AppNotOpenError('Bitcoin')
+    const error = new AppNotOpenError('ledger', 'Bitcoin')
     expect(error.message).toContain('Bitcoin app')
+    expect(error.vendor).toBe('ledger')
+  })
+
+  it('should create app not open error without vendor', () => {
+    const error = new AppNotOpenError()
+    expect(error.message).toContain('Ethereum app')
+    expect(error.vendor).toBeUndefined()
   })
 })
 

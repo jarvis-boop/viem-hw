@@ -7,7 +7,7 @@ import type {
   ConnectionStateListener,
 } from '../device.js'
 import type { DerivationPath } from '../../shared/types.js'
-import { DEFAULT_BASE_PATH, getBip44Path } from '../../shared/paths.js'
+import { DEFAULT_BASE_PATH } from '../../shared/paths.js'
 import { DeviceLockedError, AppNotOpenError, UserRejectedError } from '../../shared/errors.js'
 
 /**
@@ -40,7 +40,7 @@ export interface MockLedgerDeviceManagerOptions {
   /** Simulate connection failure */
   failConnect?: boolean | Error
   /** Simulate verification failure */
-  failVerify?: boolean | 'rejected' | 'locked' | 'app-not-open'
+  failVerify?: boolean | 'rejected' | 'locked' | 'app-not-open' | Error
   /** Known addresses by path */
   addresses?: Record<string, Address>
   /** Default address index for generation */
@@ -98,12 +98,14 @@ export function createMockLedgerDeviceManager(
   }
 
   function getAddressForPath(path: DerivationPath): Address {
-    if (addresses[path]) {
-      return addresses[path]
+    const knownAddress = addresses[path]
+    if (knownAddress) {
+      return knownAddress
     }
     // Generate deterministic mock address
     const pathParts = path.split('/')
-    const index = parseInt(pathParts[pathParts.length - 1]) || defaultAddressIndex
+    const lastPart = pathParts[pathParts.length - 1]
+    const index = lastPart ? parseInt(lastPart, 10) || defaultAddressIndex : defaultAddressIndex
     const hex = (0xdead0000 + index).toString(16).padStart(40, '0')
     return `0x${hex}` as Address
   }
@@ -152,7 +154,7 @@ export function createMockLedgerDeviceManager(
 
     if (failVerify) {
       if (failVerify === 'rejected') {
-        throw new UserRejectedError('address verification')
+        throw new UserRejectedError('address')
       } else if (failVerify === 'locked') {
         throw new DeviceLockedError('ledger')
       } else if (failVerify === 'app-not-open') {

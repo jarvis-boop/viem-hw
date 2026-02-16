@@ -70,9 +70,14 @@ export class DeviceLockedError extends HardwareWalletError {
  */
 export class AppNotOpenError extends HardwareWalletError {
   override readonly name: string = 'AppNotOpenError'
+  readonly vendor: string | undefined
+  readonly requiredApp: string
 
-  constructor(requiredApp = 'Ethereum') {
-    super(`Please open the ${requiredApp} app on your Ledger device`, 'APP_NOT_OPEN')
+  constructor(vendor?: string, requiredApp = 'Ethereum') {
+    const device = vendor ? `your ${vendor} device` : 'your device'
+    super(`Please open the ${requiredApp} app on ${device}`, 'APP_NOT_OPEN')
+    this.vendor = vendor
+    this.requiredApp = requiredApp
   }
 }
 
