@@ -7,13 +7,13 @@
  * - @ledgerhq/hw-transport-webusb (for WebUSB transport)
  */
 
-export { createLedgerAccount, type CreateLedgerAccountOptions } from './account.js'
+export { createLedgerAccount, type CreateLedgerAccountOptions } from "./account.js";
 
 export {
   discoverLedgerAccounts,
   type DiscoverLedgerAccountsOptions,
   type LedgerDerivationStyle,
-} from './discovery.js'
+} from "./discovery.js";
 
 export {
   createTransport,
@@ -23,7 +23,7 @@ export {
   type TransportType,
   type TransportOptions,
   type LedgerTransport,
-} from './transport.js'
+} from "./transport.js";
 
 export {
   createLedgerDeviceManager,
@@ -33,4 +33,4 @@ export {
   type CreateDeviceManagerOptions,
   type ConnectionState,
   type ConnectionStateListener,
-} from './device.js'
+} from "./device.js";

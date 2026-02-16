@@ -1,24 +1,20 @@
-import type { Address } from 'viem'
-import { mapTrezorError } from '../shared/errors.js'
-import { DEFAULT_BASE_PATH, buildPath, getLedgerLivePath } from '../shared/paths.js'
-import type { DerivationPath, DiscoveredAccount, DiscoveryOptions } from '../shared/types.js'
-import {
-  getTrezorConnect,
-  unwrapTrezorResponse,
-  type TrezorConnectOptions,
-} from './connect.js'
+import type { Address } from "viem";
+import { mapTrezorError } from "../shared/errors.js";
+import { DEFAULT_BASE_PATH, buildPath, getLedgerLivePath } from "../shared/paths.js";
+import type { DerivationPath, DiscoveredAccount, DiscoveryOptions } from "../shared/types.js";
+import { getTrezorConnect, unwrapTrezorResponse, type TrezorConnectOptions } from "./connect.js";
 
 /**
  * Derivation style for Trezor accounts
  */
-export type TrezorDerivationStyle = 'bip44' | 'ledger-live'
+export type TrezorDerivationStyle = "bip44" | "ledger-live";
 
 /**
  * Options for Trezor account discovery
  */
 export interface DiscoverTrezorAccountsOptions extends DiscoveryOptions, TrezorConnectOptions {
   /** Derivation style (default: 'bip44') */
-  derivationStyle?: TrezorDerivationStyle
+  derivationStyle?: TrezorDerivationStyle;
 }
 
 /**
@@ -43,45 +39,45 @@ export interface DiscoverTrezorAccountsOptions extends DiscoveryOptions, TrezorC
  * ```
  */
 export async function discoverTrezorAccounts(
-  options: DiscoverTrezorAccountsOptions = {}
+  options: DiscoverTrezorAccountsOptions = {},
 ): Promise<DiscoveredAccount[]> {
   const {
     count = 5,
     startIndex = 0,
     basePath = DEFAULT_BASE_PATH,
-    derivationStyle = 'bip44',
+    derivationStyle = "bip44",
     ...connectOptions
-  } = options
+  } = options;
 
-  const trezor = await getTrezorConnect(connectOptions)
-  const accounts: DiscoveredAccount[] = []
+  const trezor = await getTrezorConnect(connectOptions);
+  const accounts: DiscoveredAccount[] = [];
 
   try {
     for (let i = 0; i < count; i++) {
-      const index = startIndex + i
-      let path: DerivationPath
+      const index = startIndex + i;
+      let path: DerivationPath;
 
-      if (derivationStyle === 'ledger-live') {
-        path = getLedgerLivePath(index)
+      if (derivationStyle === "ledger-live") {
+        path = getLedgerLivePath(index);
       } else {
-        path = buildPath(basePath, index)
+        path = buildPath(basePath, index);
       }
 
       const response = await trezor.ethereumGetAddress({
         path,
         showOnTrezor: false,
-      })
+      });
 
-      const result = unwrapTrezorResponse(response)
+      const result = unwrapTrezorResponse(response);
       accounts.push({
         address: result.address as Address,
         path,
         index,
-      })
+      });
     }
   } catch (error) {
-    throw mapTrezorError(error)
+    throw mapTrezorError(error);
   }
 
-  return accounts
+  return accounts;
 }

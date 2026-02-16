@@ -21,10 +21,10 @@ export {
   type MockTrezorScenario,
   type MockTrezorDeviceInfo,
   type MockTrezorFeatures,
-} from './connect.js'
+} from "./connect.js";
 
 export {
   createMockTrezorAccount,
   createMockTrezorDiscovery,
   type MockTrezorAccountOptions,
-} from './helpers.js'
+} from "./helpers.js";

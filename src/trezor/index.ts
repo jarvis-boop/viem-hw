@@ -5,13 +5,13 @@
  * - @trezor/connect
  */
 
-export { createTrezorAccount, type CreateTrezorAccountOptions } from './account.js'
+export { createTrezorAccount, type CreateTrezorAccountOptions } from "./account.js";
 
 export {
   discoverTrezorAccounts,
   type DiscoverTrezorAccountsOptions,
   type TrezorDerivationStyle,
-} from './discovery.js'
+} from "./discovery.js";
 
 export {
   getTrezorConnect,
@@ -20,7 +20,7 @@ export {
   type TrezorConnect,
   type TrezorConnectOptions,
   type TrezorResponse,
-} from './connect.js'
+} from "./connect.js";
 
 export {
   createTrezorDeviceManager,
@@ -30,4 +30,4 @@ export {
   type CreateTrezorDeviceManagerOptions,
   type ConnectionState,
   type ConnectionStateListener,
-} from './device.js'
+} from "./device.js";

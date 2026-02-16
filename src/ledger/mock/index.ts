@@ -18,17 +18,17 @@ export {
   type MockScenario,
   type MockDeviceInfo,
   type MockAppConfig,
-} from './transport.js'
+} from "./transport.js";
 
 export {
   createMockLedgerAccount,
   createMockLedgerDiscovery,
   type MockLedgerAccountOptions,
-} from './helpers.js'
+} from "./helpers.js";
 
 export {
   createMockLedgerDeviceManager,
   type MockLedgerDeviceManagerOptions,
   type MockDeviceInfoConfig,
   type MockAppConfigConfig,
-} from './device.js'
+} from "./device.js";

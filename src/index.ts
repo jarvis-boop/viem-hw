@@ -21,7 +21,7 @@ export type {
   SignatureComponents,
   TransactionType,
   TypedDataDomain,
-} from './shared/types.js'
+} from "./shared/types.js";
 
 // Errors
 export {
@@ -36,7 +36,7 @@ export {
   ConnectionTimeoutError,
   mapLedgerError,
   mapTrezorError,
-} from './shared/errors.js'
+} from "./shared/errors.js";
 
 // Path utilities
 export {
@@ -48,7 +48,7 @@ export {
   pathToLedgerFormat,
   getBip44Path,
   getLedgerLivePath,
-} from './shared/paths.js'
+} from "./shared/paths.js";
 
 // Signature utilities
 export {
@@ -58,7 +58,7 @@ export {
   isValidSignature,
   normalizeS,
   toViemSignature,
-} from './shared/signatures.js'
+} from "./shared/signatures.js";
 
 // Version
-export { VERSION } from './shared/version.js'
+export { VERSION } from "./shared/version.js";
